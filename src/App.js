@@ -1,169 +1,124 @@
-import { useState } from 'react';
-import './App.css';
+import React from 'react';
+import { useState } from "react";
+import './App.css'; // You can create this CSS file to style your calculator layout.
+
+function CalcLayout({label, onClick, buttonClassName = "CalcLayout"}) {
+  return (
+    <button className={buttonClassName} onClick ={onClick}>
+      {label}
+    </button>
+  );
+}
 
 function CalcDisplay({display}) {
   return (
-    <div className="calcDisplay">
+    <div className="CalcDisplay">
       {display}
-    </div>
+    </div>    
   );
 }
 
-function CalcButton({value, onClick}) {
-  return (
-    <button className="calcButton" onClick={onClick}>
-      {value}
-    </button>
-  );
-}
+export default function AppLayout() {
 
-function NegativeButton({value,onClick}){
-  return (
-    <button className="calcButton" onClick={onClick}>
-      negative
-    </button>
-  )
-}
+  const[disp, setDisp] = useState(0);
+  const[num1, setNum1] = useState(null);
+  const[oper, setOper] = useState(null);
+  const[num2, setNum2] = useState(null);
 
-function ClearButton({value, onClick}){
-  return (
-    <button className="calcButton redcolor" onClick={onClick}>
-      {value}
-    </button>
-  );
-}
-
-function App() {
-
-  const [num1, setNum1] = useState(0);
-  const [num2, setNum2] = useState(0);
-  const [oper, setOper] = useState(0);
-  const [res, setRes] = useState(0);
-  const [disp, setDisp] = useState(0);
 
   const numberClickHandler = (e) => {
     e.preventDefault();
     const value = e.target.innerHTML;
-
-    if (oper === 0) {
-      if (parseInt(num1) === 0) {
-        setNum1(value)
-        setDisp(value);
+    var num = value;
+    if(oper === null) {
+      if(num1 !== null) {
+        num = num1 + num;
       }
-      else{
-        if(String(num1).length<10){
-          setNum1(num1+value)
-          setDisp(num1+value);
-        }
+      setNum1(num);            
+      setDisp(num);            
+    } else {
+      if(num2 !== null) {
+        num = num2 + num;
       }
-    }
-    else if(oper==="negative"){
-      if (parseInt(num1) === 0) {
-        setNum1("-"+value)
-        setDisp("-"+value);
-      }
-      else{
-        if(String(num1).length<10){
-          setNum1(num1+value)
-          setDisp(num1+value);
-        }
-      }
-    }
-    else if(oper!=="negative"){
-      if (parseInt(num2) === 0) {
-        setNum2(value)
-        setDisp(value);
-      }
-      else{
-        if(String(num2).length<10){
-          setNum2(num2+value)
-          setDisp(num2+value);
-        }
-      }
-    }
-    else{
-      setDisp("Error negative only once at the beginning");
-    }
-    console.log(num1 +'|'+ num2 +'|'+ oper +'|'+ res +'|'+ disp);
-  };
-
-  const operClickHandler = (e) => {
+      setNum2(num);            
+      setDisp(num);       }
+  }
+  const operatorClickHandler = (e) => {
     e.preventDefault();
     const value = e.target.innerHTML;
-    setOper(value)
+    setOper(value);
     setDisp(value);
+  }
 
-    console.log(num1 +'|'+ num2 +'|'+ oper +'|'+ res +'|'+ disp);
-  };
+  const equalClickHandler = (e) => {
+    e.preventDefault();
 
-  const equalClickHandler = () => {
-    console.log(num1 +'|'+ num2 +'|'+ oper +'|'+ res +'|'+ disp);
-
-    if(oper === "+")
-    {
-      setRes(parseInt(num1) + parseInt(num2));
+    if (oper === "+") {
       setDisp(parseInt(num1) + parseInt(num2));
-    }
-
-    else if (oper === "-")
-    {
-      setRes(parseInt(num1) - parseInt(num2));
-      setDisp(parseInt(num1) - parseInt(num2));
-
-    } else if(oper === "*")
-    {
-      setRes(parseInt(num1) * parseInt(num2));
+    } else if (oper === "-") {
+        setDisp(parseInt(num1) - parseInt(num2));
+    } else if (oper === "*") {
       setDisp(parseInt(num1) * parseInt(num2));
-    } else if(oper === "/")
-    {
-      setRes(parseInt(num1) / parseInt(num2));
+    } else if (oper === "/") {
       setDisp(parseInt(num1) / parseInt(num2));
-    }
-    else {
+    } else {
       setDisp("ERROR");
-      setNum1(0);
-      setNum2(0);
-      setOper(0);
-      setRes(0);
-      setDisp(0);
     }
-  };
+  }
+  
 
-  /*This is now working!*/
-  const clearClickHandler = () => {
-    setNum1(0);
-    setNum2(0);
-    setOper(0);
-    setRes(0);
+  const clearClickHandler = (e) => {
+    e.preventDefault();
+
     setDisp(0);
+    setNum1(null);
+    setOper(null);
+    setNum2(null);
+  }
 
-    console.log(num1 +'|'+ num2 +'|'+ oper +'|'+ res +'|'+ disp);
-  };
+const nameClickHandler = (e) => {
+  e.preventDefault();
+  alert("Display your name in the calculator display");
+}
 
   return (
-    <div className="calcContainer">
-      <CalcDisplay display={disp}/>
-      <div className="calcButtonsContainer">
-        <CalcButton value="7" onClick={numberClickHandler}/>
-        <CalcButton value="8" onClick={numberClickHandler}/>
-        <CalcButton value="9" onClick={numberClickHandler}/>
-        <CalcButton value="+" onClick={operClickHandler}/>
-        <CalcButton value="6" onClick={numberClickHandler}/>
-        <CalcButton value="5" onClick={numberClickHandler}/>
-        <CalcButton value="4" onClick={numberClickHandler}/>
-        <CalcButton value="-" onClick={operClickHandler}/>
-        <CalcButton value="3" onClick={numberClickHandler}/>
-        <CalcButton value="2" onClick={numberClickHandler}/>
-        <CalcButton value="1" onClick={numberClickHandler}/>
-        <CalcButton value="*" onClick={operClickHandler}/>
-        <ClearButton value="C" onClick={clearClickHandler}/>
-        <CalcButton value="0" onClick={numberClickHandler}/>
-        <CalcButton value="=" onClick={equalClickHandler}/>
-        <CalcButton value="/" onClick={operClickHandler}/>
-        <NegativeButton value="negative" onClick={operClickHandler}/>
+    <div className = "AppLayout">
+    <div className="CalcContainer">
+      <h1>Calculator of Carmela Sunga 
+        - CPE3A</h1>
+      <div className="display">My Calculator</div>
+      <CalcDisplay display={disp} />
+      <div className="button-row">
+        <CalcLayout label={7} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={8} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={9} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={"/"} onClick={operatorClickHandler} />
       </div>
+      <div className="button-row">
+        <CalcLayout label={4} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={5} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={6} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={"*"} onClick={operatorClickHandler} />
+      </div>
+      <div className="button-row">
+      <CalcLayout label={1} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={2} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={3} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={"-"} onClick={operatorClickHandler} />
+      </div>
+      <div className="button-row">
+      <CalcLayout label={0} onClick={numberClickHandler} buttonClassName={"CalcButtonNum"}/>
+        <CalcLayout label={"="} onClick={equalClickHandler}/>
+        <CalcLayout label={"C"} onClick={clearClickHandler} />
+        <CalcLayout label={"+"} onClick={operatorClickHandler} />
+      </div>
+
+      <div className="Name">
+          <CalcLayout label={"SUNGA"} onClick={nameClickHandler} buttonClassName={"CalcButtonName"}/>
+        </div>
+      </div>
+      <div className="Notes">
+        </div>
     </div>
   );
 }
-
-export default App;
